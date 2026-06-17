@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex 1 Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='%23FF0000'%3E%3Cpath d='M15 75 L22 35 L70 35 L67 43 L36 43 L34 52 L60 52 L57 60 L32 60 L28 75 Z M70 75 L77 35 L87 35 L80 75 Z M90 75 L92 65 L99 65 L97 75 Z'/%3E%3C/svg%3E">
+</head>
+<body class="p-6">
+
+<!-- SPLASH SCREEN -->
+<div id="apex-1-splash" class="fixed inset-0 z-[9999] bg-[#050816] overflow-hidden flex flex-col justify-between p-16 select-none text-white transition-opacity duration-1000">
+
+    <div class="w-full opacity-0 transition-opacity duration-1000" id="top-tag">
+        <div class="premium-font text-[10px] font-medium tracking-[0.3em] text-gray-500 uppercase"></div>
+    </div>
+
+    <div class="w-full flex flex-col items-center justify-center my-auto relative">
+        <div class="text-center mb-24 opacity-0 transition-all duration-[1200ms] transform translate-y-4" id="main-title-block">
+            <h1 class="text-4xl font-light premium-font tracking-[0.5em] text-white uppercase leading-none">
+                APEX 1 ANALYTICS
+            </h1>
+            <p class="text-[10px] text-gray-500 tracking-[0.35em] uppercase premium-font font-medium mt-4">
+                Real Telemetry Data
+            </p>
+        </div>
+
+        <div class="w-full max-w-4xl h-[100px] relative flex items-center justify-center opacity-0 transition-opacity duration-[1000ms]" id="race-strip-scene">
+            <div class="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-[#00F5D4]/30 to-transparent"></div>
+
+            <svg class="absolute w-full h-40 pointer-events-none opacity-0 transition-opacity duration-[1500ms]" id="ghost-paths" viewBox="0 0 1000 100" preserveAspectRatio="none">
+                <path d="M 0 50 Q 450 25, 1000 50" fill="none" stroke="#FF2D2D" stroke-width="0.75" stroke-dasharray="6 8" class="opacity-10"/>
+                <path d="M 0 50 Q 550 75, 1000 50" fill="none" stroke="#00F5D4" stroke-width="0.5" stroke-dasharray="4 6" class="opacity-10"/>
+            </svg>
+
+            <div class="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/5 to-transparent light-sweep-line pointer-events-none blur-sm"></div>
+
+            <div id="hero-red-car" class="absolute opacity-0 transition-all duration-[1500ms] flex items-center transform -translate-x-12" style="left: 45%;">
+                <div class="flex items-center gap-4 hero-vibration">
+                    <div class="w-12 h-3.5 bg-gradient-to-r from-[#FF2D2D]/30 via-[#FF2D2D] to-white rounded-sm shadow-[0_0_35px_rgba(255,45,45,0.8)] border border-[#FF2D2D]/40 relative">
+                        <div id="speed-wake" class="absolute -left-24 right-2 h-[1px] top-1/2 -translate-y-1/2 bg-gradient-to-r from-transparent via-[#FF2D2D]/50 to-transparent transition-all duration-300"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute bottom-[-24px] inset-x-0 flex justify-center">
+                <button id="entry-btn" onclick="dismissSplash()" class="opacity-0 scale-95 pointer-events-none transition-all duration-700 glass-cta px-12 py-3.5 rounded-sm premium-font font-medium text-[10px] tracking-[0.3em] text-white uppercase hover:bg-white hover:text-black hover:scale-105">
+                    Enter Mission Control
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-full flex justify-between items-center opacity-0 transition-opacity duration-1000" id="bottom-tag">
+        <div class="premium-font text-[9px] tracking-[0.25em] text-gray-600 uppercase" id="loading-text">
+            BOOTING APEX SYSTEMS...
+        </div>
+    </div>
+</div>
+
+<!-- MAIN DASHBOARD -->
+<div class="flex justify-between items-center border-b border-white/10 pb-4 mb-6">
+    <div>
+        <h1 class="text-3xl font-black heading-font tracking-wider bg-gradient-to-r from-[#00F5D4] to-[#7B2CBF] bg-clip-text text-transparent">APEX ANALYTICS ENGINE</h1>
+        <p class="text-xs text-gray-400 font-medium tracking-widest uppercase">Formula 1 Strategy Intelligence Mission Command Center</p>
+    </div>
+    <div id="connectionStatus" class="numeric-font text-xs bg-red-500/10 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-md uppercase">
+        System Offline
+    </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+    <!-- SIDEBAR -->
+    <div class="glass-panel p-5 rounded-xl h-fit space-y-6">
+        <div class="flex items-center gap-3 border-b border-white/10 pb-2">
+            <i data-lucide="sliders-horizontal" class="w-5 h-5 text-[#00F5D4] animate-pulse"></i>
+            <h2 class="text-md font-bold heading-font text-[#00F5D4] tracking-wider uppercase">Mission Control</h2>
+        </div>
+
+        <div class="space-y-4">
+            <div>
+                <label class="text-xs text-gray-400 uppercase font-semibold block mb-1">Season Selection</label>
+                <select id="season" class="w-full bg-[#0d1127] border border-white/10 p-2.5 rounded-lg text-sm text-white focus:outline-none focus:border-[#00F5D4]">
+                    <option value="2024">2024 Season</option>
+                    <option value="2025">2025 Season</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-xs text-gray-400 uppercase font-semibold block mb-1">Grand Prix Location</label>
+                <select id="gp" class="w-full bg-[#0d1127] border border-white/10 p-2.5 rounded-lg text-sm text-white focus:outline-none focus:border-[#00F5D4]">
+                    <option value="Bahrain">Bahrain GP</option>
+                    <option value="Monaco">Monaco GP</option>
+                    <option value="Silverstone">Silverstone GP</option>
+                    <option value="Monza">Monza GP</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-xs text-gray-400 uppercase font-semibold block mb-1">Session Target</label>
+                <select id="session_type" class="w-full bg-[#0d1127] border border-white/10 p-2.5 rounded-lg text-sm text-white focus:outline-none focus:border-[#00F5D4]">
+                    <option value="Race">Race Event</option>
+                    <option value="Qualifying">Qualifying Session</option>
+                </select>
+            </div>
+
+            <button id="syncBtn" onclick="syncSession()" class="w-full bg-gradient-to-r from-[#00F5D4] to-[#7B2CBF] hover:opacity-90 text-black font-bold uppercase py-3 rounded-lg text-xs numeric-font tracking-wider transition-all duration-200 shadow-md flex items-center justify-center gap-2 min-h-[48px] text-center leading-tight">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-black"></i>
+                <span>Execute Network Sync</span>
+            </button>
+        </div>
+
+        <div id="driverConfigBlock" class="hidden space-y-4 pt-4 border-t border-white/10">
+            <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">🏁 Configuration Nodes</h3>
+            <div>
+                <label class="text-xs text-gray-400 block mb-1">Primary Unit (Cyan)</label>
+                <select id="driver1" onchange="loadAnalytics()" class="w-full bg-[#0d1127] border border-white/10 p-2.5 rounded-lg text-sm text-white focus:outline-none focus:border-[#00F5D4]"></select>
+            </div>
+            <div>
+                <label class="text-xs text-gray-400 block mb-1">Rival Unit (Magenta)</label>
+                <select id="driver2" onchange="loadAnalytics()" class="w-full bg-[#0d1127] border border-white/10 p-2.5 rounded-lg text-sm text-white focus:outline-none focus:border-[#FF006E]"></select>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="lg:grid-cols-1 lg:col-span-3 space-y-6">
+
+        <!-- KPI CARDS -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="glass-panel p-4 rounded-xl border-l-4 border-[#00F5D4]">
+                <p class="text-[10px] tracking-wider text-gray-400 uppercase font-bold mb-1">Top Speed Metric</p>
+                <h3 id="kpiTopSpeed" class="text-xl font-black text-white numeric-font">--- <span class="text-xs text-gray-400">km/h</span></h3>
+            </div>
+            <div class="glass-panel p-4 rounded-xl border-l-4 border-[#7B2CBF]">
+                <p class="text-[10px] tracking-wider text-gray-400 uppercase font-bold mb-1">Fastest Lap Time</p>
+                <h3 id="kpiFastestLap" class="text-xl font-black text-white numeric-font">---</h3>
+            </div>
+            <div class="glass-panel p-4 rounded-xl border-l-4 border-[#FF006E]">
+                <p class="text-[10px] tracking-wider text-gray-400 uppercase font-bold mb-1">Active Tyre Age</p>
+                <h3 id="kpiTyreLife" class="text-xl font-black text-white numeric-font">-- <span class="text-xs text-gray-400">laps</span></h3>
+            </div>
+            <div class="glass-panel p-4 rounded-xl border-l-4 border-[#00F5D4]">
+                <p class="text-[10px] tracking-wider text-gray-400 uppercase font-bold mb-1">Pit Probability Index</p>
+                <h3 id="kpiPitProb" class="text-xl font-black numeric-font" style="color:#00F5D4">--%</h3>
+                <div class="mt-2 h-1 rounded-full bg-white/10 overflow-hidden">
+                    <div id="kpiPitBar" class="h-full rounded-full transition-all duration-700" style="width:0%;background:#00F5D4"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="border-b border-white/10 flex space-x-6 text-sm font-semibold uppercase tracking-wider mb-6">
+            <button onclick="switchTab('strategic')" id="tab-strategic" class="tab-btn active flex items-center gap-2 pb-3 text-cyan-400 font-medium font-mono text-sm tracking-wide transition-all">
+                <i data-lucide="line-chart" class="w-4 h-4 text-cyan-400"></i>
+                Strategic Tracking
+            </button>
+            <button onclick="switchTab('telemetry')" id="tab-telemetry" class="tab-btn flex items-center gap-2 pb-3 text-gray-400 hover:text-white font-medium font-mono text-sm tracking-wide transition-all">
+                <i data-lucide="activity" class="w-4 h-4 text-pink-500"></i>
+                High-Fidelity Telemetry
+            </button>
+            <button onclick="switchTab('ml')" id="tab-ml" class="tab-btn flex items-center gap-2 pb-3 text-gray-400 hover:text-white font-medium font-mono text-sm tracking-wide transition-all">
+                <i data-lucide="cpu" class="w-4 h-4 text-purple-500"></i>
+                Machine Learning Tab
+            </button>
+        </div>
+
+        <!-- STANDBY PLACEHOLDER -->
+        <div id="dashboardPlaceholder" class="glass-panel rounded-xl p-12 text-center flex flex-col items-center justify-center min-h-[400px]">
+            <div class="mb-4 text-purple-400 animate-bounce">
+                <i data-lucide="radio" class="w-10 h-10"></i>
+            </div>
+            <h3 class="text-lg heading-font font-bold mb-1 text-white">System Standby Matrix</h3>
+            <p class="text-sm text-gray-400 max-w-sm">Synchronize the mission telemetry profile on the sidebar command panel to activate standard execution channels.</p>
+        </div>
+
+        <!-- STRATEGIC PANEL -->
+        <div id="panel-strategic" class="hidden space-y-6">
+            <div id="cliffAlert" class="hidden bg-red-950/20 text-[#FF006E] border border-[#FF006E]/40 rounded-xl p-4 flex items-center justify-center gap-3 text-sm font-bold numeric-font tracking-wide animate-pulse">
+                <i data-lucide="alert-triangle" class="w-4 h-4 text-[#FF006E]"></i>
+                <span>THEORETICAL PERFORMANCE CLIFF DETECTED</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass-panel p-4 rounded-xl">
+                    <h3 class="text-sm font-bold tracking-wide text-gray-300 uppercase mb-3 heading-font">Tyre Degradation Matrix</h3>
+                    <div class="relative h-64"><canvas id="chartTyreDeg"></canvas></div>
+                </div>
+                <div class="glass-panel p-4 rounded-xl">
+                    <h3 class="text-sm font-bold tracking-wide text-gray-300 uppercase mb-3 heading-font">Grid Deployment Position Delta</h3>
+                    <div class="relative h-64"><canvas id="chartGridDelta"></canvas></div>
+                </div>
+            </div>
+            <div class="glass-panel p-4 rounded-xl w-full">
+                <h3 class="text-sm font-bold tracking-wide text-gray-300 uppercase mb-3 heading-font">Dynamic Race-Trace Array (Gap-to-Leader Matrix)</h3>
+                <div class="relative h-72"><canvas id="chartRaceTrace"></canvas></div>
+            </div>
+        </div>
+
+        <!-- TELEMETRY PANEL -->
+        <div id="panel-telemetry" class="hidden space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-panel p-4 rounded-xl md:col-span-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-sm font-bold tracking-wide text-gray-300 uppercase mb-3 heading-font">Spatial Track Profile Layout</h3>
+                        <p class="text-xs text-gray-400 mb-4">Ingested geometric spatial positioning array mapping performance coordinates natively.</p>
+                    </div>
+                    <div class="relative h-64 flex justify-center items-center">
+                        <canvas id="chartSpatialTrack" class="max-h-full max-w-full"></canvas>
+                    </div>
+                </div>
+                <div class="glass-panel p-4 rounded-xl md:col-span-2 space-y-4">
+                    <h3 class="text-sm font-bold tracking-wide text-gray-300 uppercase mb-1 heading-font">Time-Series Multi-Channel Mechanical Overlays</h3>
+                    <div class="h-36 relative"><canvas id="subChartSpeed"></canvas></div>
+                    <div class="h-36 relative"><canvas id="subChartRPM"></canvas></div>
+                    <div class="h-36 relative"><canvas id="subChartThrottle"></canvas></div>
+                    <div class="h-36 relative"><canvas id="subChartBrake"></canvas></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ML PANEL -->
+        <div id="panel-ml" class="hidden space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass-panel p-4 rounded-xl md:col-span-2">
+                    <h3 class="text-sm font-bold tracking-wide text-gray-300 uppercase mb-3 heading-font">Unsupervised Physics Domain Segmentation (K-Means)</h3>
+                    <div class="relative h-80"><canvas id="chartKMeans"></canvas></div>
+                </div>
+                <div class="glass-panel p-4 rounded-xl md:col-span-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-sm font-bold tracking-wide text-[#00F5D4] uppercase mb-4 heading-font">💡 Algorithmic Model Mapping</h3>
+                        <div id="clusterInterpretFrame" class="space-y-4 text-xs text-gray-300 font-medium">
+                            <p class="text-gray-400">Initialize standard validation arrays to render localized physical domain descriptions here.</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 border-t border-white/10 pt-4 text-center text-[10px] uppercase tracking-wider text-gray-500 font-bold">
+                        Scikit-Learn Execution Engine Active
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- JS: splash first, then app, then init lucide -->
+<script src="/static/js/splash.js"></script>
+<script src="/static/js/app.js"></script>
+<script>lucide.createIcons();</script>
+
+</body>
+</html>
